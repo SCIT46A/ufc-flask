@@ -1,7 +1,5 @@
 FROM python:3.9-slim
 
-# 작업 디렉토리 설정
-WORKDIR /app
 
 # 필요한 파일 복사 및 패키지 설치
 COPY requirements.txt .
