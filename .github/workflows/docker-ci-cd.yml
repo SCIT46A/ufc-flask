@@ -70,7 +70,7 @@ jobs:
           script: |
             export PATH=$PATH:/usr/local/bin/
             echo "Stopping existing container if it exists..."
-            docker ps -q --filter "name=ufc-flask" | grep . && docker stop ufc-flask && docker rm ufc-flask || echo "No container to stop."
+            docker ps -aq --filter "name=ufc-flask" | grep . && docker rm -f ufc-flask || echo "No container to remove."
             
             echo "GitHub registry login"
             docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
