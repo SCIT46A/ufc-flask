@@ -12,4 +12,5 @@ COPY . .
 EXPOSE 9998
 
 # Flask 애플리케이션 실행
-CMD ["python", "src/main/python/app.py"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:9998", "src.main.python.app:app"]
+
