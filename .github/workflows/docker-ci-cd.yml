@@ -1,9 +1,4 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+name: CI-CD
 
 on:
   push:
@@ -21,46 +16,31 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # JDK 설정
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+      # (선택 사항) Python 환경 설정 및 테스트 실행
+      # - name: Set up Python 3.9
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: '3.9'
+      #
+      # - name: Install Dependencies
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     pip install -r requirements.txt
+      #
+      # - name: Run Tests
+      #   run: pytest
 
-      # Gradle 캐싱
-      - name: Gradle Caching
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      # Secret 주입
-      - name: Append Secrets Settings
-        run: |
-          echo "${{ secrets.APPLICATION_YML }}" >> ./src/main/resources/application.yml
-        shell: bash
-
-      # gradlew 실행 권한 부여
-      - name: Fix gradlew permission
-        run: chmod +x ./gradlew
-
-      # Gradle 빌드 및 테스트
-      - name: Gradle Build and Test
-        run: ./gradlew clean build
-
-      # Docker 빌드 및 푸시
+      # Docker 이미지 빌드 및 푸시
       - name: Build & Push Docker Image
         run: |
+          echo "Logging into GitHub Container Registry..."
           docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          echo "Building Docker image..."
           docker build -f Dockerfile -t ghcr.io/${{ secrets.DOCKER_USERNAME }}/ufc:flask .
+          echo "Pushing Docker image..."
           docker push ghcr.io/${{ secrets.DOCKER_USERNAME }}/ufc:flask
 
-      # 서버 배포
+      # 서버 배포 (SSH를 통한 원격 서버 컨테이너 관리)
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
         with:
