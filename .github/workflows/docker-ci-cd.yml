@@ -44,7 +44,6 @@ jobs:
 
     # Secret 주입
     - name: Append Secrets Settings
-      working-directory: ./ufc-flask
       run: |
         echo "${{ secrets.APPLICATION_YML }}" >> ./src/main/resources/application.yml
       shell: bash
