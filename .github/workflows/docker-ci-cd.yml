@@ -50,12 +50,10 @@ jobs:
 
     # Gradle 빌드 및 테스트
     - name: Gradle Build and Test
-      working-directory: ./ufc-flask
       run: ./gradlew clean build
 
     # Docker 빌드 및 푸시
     - name: Build & Push Docker Image
-      working-directory: ./ufc-flask
       run: |
         docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -f Dockerfile -t ghcr.io/${{ secrets.DOCKER_USERNAME }}/ufc:flask .
