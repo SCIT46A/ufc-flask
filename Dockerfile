@@ -12,4 +12,4 @@ COPY . .
 EXPOSE 9998
 
 # Flask 애플리케이션 실행
-CMD ["python", "app.py"]
+CMD ["python", "src/main/python/app.py"]
