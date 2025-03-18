@@ -7,7 +7,7 @@
 
 on:
   push:
-    branches: [ "deploy-test" ]
+    branches: [ "master" ]
 
 permissions:
   contents: read
@@ -44,23 +44,23 @@ jobs:
 
     # Secret 주입
     - name: Append Secrets Settings
-      working-directory: ./ufc
+      working-directory: ./ufc-flask
       run: |
         echo "${{ secrets.APPLICATION_YML }}" >> ./src/main/resources/application.yml
       shell: bash
 
     # Gradle 빌드 및 테스트
     - name: Gradle Build and Test
-      working-directory: ./ufc
+      working-directory: ./ufc-flask
       run: ./gradlew clean build
 
     # Docker 빌드 및 푸시
     - name: Build & Push Docker Image
-      working-directory: ./ufc
+      working-directory: ./ufc-flask
       run: |
         docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker build -f Dockerfile -t ghcr.io/${{ secrets.DOCKER_USERNAME }}/ufc:${{ vars.TAG }} .
-        docker push ghcr.io/${{ secrets.DOCKER_USERNAME }}/ufc:${{ vars.TAG }}
+        docker build -f Dockerfile -t ghcr.io/${{ secrets.DOCKER_USERNAME }}/ufc:flask .
+        docker push ghcr.io/${{ secrets.DOCKER_USERNAME }}/ufc:flask
 
     # 서버 배포
     - name: Deploy to Server
@@ -73,16 +73,16 @@ jobs:
         script: |
           export PATH=$PATH:/usr/local/bin/
           echo "Stopping existing container if it exists..."
-          docker ps -q --filter "name=ufc-stable" | grep . && docker stop ufc-stable && docker rm ufc-stable || echo "No container to stop."
+          docker ps -q --filter "name=ufc-flask" | grep . && docker stop ufc-flask && docker rm ufc-flask || echo "No container to stop."
 
           echo "GitHub registry login"
           docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
           echo "Pulling the latest image..."
-          docker pull ghcr.io/${{ secrets.DOCKER_USERNAME }}/ufc:${{ vars.TAG }}
+          docker pull ghcr.io/${{ secrets.DOCKER_USERNAME }}/ufc:flask
 
           echo "Starting new container..."
-          docker run -d --name ufc-stable -p 10000:10000 ghcr.io/${{ secrets.DOCKER_USERNAME }}/ufc:${{ vars.TAG }}
+          docker run -d --name ufc-flask -p 9998:9998 ghcr.io/${{ secrets.DOCKER_USERNAME }}/ufc:flask
 
           echo "Cleaning up unused images..."
           docker image prune -f
