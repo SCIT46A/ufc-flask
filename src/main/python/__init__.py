@@ -11,16 +11,16 @@ app = Flask(__name__)
 CORS(app)
 
 # DB 연결 설정
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@sorakaze.duckdns.org:3366/ufc'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@sorakaze.duckdns.org:3336/ufc'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # DB 연결 함수
 def get_db_connection():
     return pymysql.connect(
-        host='13.209.14.76',
+        host='sorakaze.duckdns.org',
         user='root',
-        password='root',
+        password='scit123$',
         database='ufc',
         charset='utf8mb4'
     )
@@ -28,7 +28,7 @@ def get_db_connection():
 # Flask에서 JSON 반환 (유저 ID 기반 추천)
 @app.route('/recommendations', methods=['get'])
 def get_recommendations():
-    return "test"
+    return "sdfsdfsdfsdfsd"
 
 if __name__ == '__main__':
     app.run(port=5000)
