@@ -89,10 +89,11 @@ def get_user_recommendations():
     for tag in top_predicted_tags:
         # 캠페인 조회: 해당 태그를 가진 캠페인 중 campaign_status가 1인 캠페인
         campaign_sql = """
-            SELECT c.photo_id, c.title
+            SELECT i.image_id, c.title
             FROM Campaigns c
             INNER JOIN CampaignTags ct ON c.campaign_id = ct.campaign_id
             INNER JOIN Tags t ON ct.tag_id = t.tag_id
+            INNER JOIN ImageUrls i ON c.photo_id = i.photo_id
             WHERE t.content = :tag AND c.campaign_status = 1
         """
         query_result = db.session.execute(text(campaign_sql), {"tag": tag})
