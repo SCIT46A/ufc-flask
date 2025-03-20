@@ -36,10 +36,11 @@ class Tag(db.Model):
 import os
 # ... (기존 import 문들)
 
-@app.route('/recommendations/user', methods=['GET'])
+@app.route('/recommendations/user', methods=['POST'])
 def get_user_recommendations():
     # (여기서는 테스트용으로 user_id를 8로 고정합니다)
-    user_id = request.args.get('user_id')
+    data = request.get_json()
+    user_id = data.get('user_id') if data else None
     # user_id = 8
 
     # user_feature_view에서 해당 유저의 feature 값을 조회합니다.
@@ -119,7 +120,7 @@ def get_user_recommendations():
 
 
 # 업데이트 엔드포인트: 기본 모델을 기반으로 재학습하여 업데이트 모델 저장
-@app.route('/recommendations/update', methods=['GET'])
+@app.route('/recommendations/update', methods=['POST'])
 def update_recommendations():
     sql = "SELECT * FROM feature_view"
     result = db.session.execute(text(sql))
