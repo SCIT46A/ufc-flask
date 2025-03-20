@@ -111,10 +111,12 @@ def get_user_recommendations():
     # 최종 3개만 추출합니다.
     campaign_results = campaign_results[:3]
 
-    return jsonify({
+    response_data = {
         "user_id": user_id,
         "campaigns": campaign_results
-    })
+    }
+    json_str = json.dumps(response_data, ensure_ascii=False)
+    return Response(json_str, content_type="application/json; charset=utf-8")
 
 
 
