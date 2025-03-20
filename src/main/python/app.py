@@ -69,8 +69,8 @@ def get_user_recommendations():
             pass
 
     # 업데이트된 모델(update_recommender.pkl)이 있으면 사용, 없으면 기본 모델(activity_recommender.pkl) 사용
-    update_model_path = "../resources/update_recommender.pkl"
-    base_model_path = "../resources/activity_recommender.pkl"
+    update_model_path = "../../../update_recommender.pkl"
+    base_model_path = "../../../activity_recommender.pkl"
     if os.path.exists(update_model_path):
         model = joblib.load(update_model_path)
     else:
@@ -129,7 +129,7 @@ def update_recommendations():
     features = [row['feature'] for row in view_list]
     targets = [row['target'] for row in view_list]
 
-    base_model_path = "../resources/activity_recommender.pkl"
+    base_model_path = "../../../activity_recommender.pkl"
     model = joblib.load(base_model_path)
 
     # stratify 옵션 사용 여부 결정 (클래스별 최소 샘플 수 체크)
@@ -146,7 +146,7 @@ def update_recommendations():
     # 모델 재학습
     model.fit(X_train, y_train)
 
-    update_model_path = "../resources/update_recommender.pkl"
+    update_model_path = "../../../update_recommender.pkl"
     joblib.dump(model, update_model_path)
 
 
